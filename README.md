@@ -1,1 +1,3 @@
-# This app gives you latest news based on different category
+# News Monkey
+
+This app gives you latest news based on different category
