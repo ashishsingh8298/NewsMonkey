@@ -17,7 +17,6 @@ export default function News(props) {
     let data = await fetch(url);
     setProgress(30);
     let parsedData = await data.json();
-    console.log(parsedData);
     setProgress(70);
     setPage(page + 1);
     setArticles(parsedData.response.docs);
