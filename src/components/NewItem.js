@@ -2,6 +2,7 @@ import React from "react";
 
 export default function NewItem(props) {
   const { title, description, imageUrl, url, publishedAt, source } = props;
+
   return (
     <>
       <div className="card">

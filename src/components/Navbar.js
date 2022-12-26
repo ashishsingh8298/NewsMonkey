@@ -22,7 +22,7 @@ function Navbar() {
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav">
             <li className="nav-item"><Link className="nav-link" to="/business">Business</Link></li>
-            <li className="nav-item"><Link className="nav-link" to="/entertainment">Entertainment</Link></li>
+            <li className="nav-item"><Link className="nav-link" to="/realestate">Real Estate</Link></li>
             <li className="nav-item"><Link className="nav-link" to="/health">Health</Link></li>
             <li className="nav-item"><Link className="nav-link" to="/science">Science</Link></li>
             <li className="nav-item"><Link className="nav-link" to="/sports">Sports</Link></li>

@@ -4,8 +4,8 @@ import Loader from "./Loader";
 import NewItem from "./NewItem";
 
 export default function News(props) {
-  const { category, apiKey, pageSize, setProgress } = props;
-  const [page, setPage] = useState(1);
+  const { category, apiKey, setProgress } = props;
+  const [page, setPage] = useState(0);
   const [totalResults, setTotalResults] = useState(0);
   const [loading, setLoading] = useState(true);
   const [articles, setArticles] = useState([]);
@@ -13,14 +13,15 @@ export default function News(props) {
   const updateNews = async () => {
     setLoading(true);
     setProgress(10);
-    const url=`https://newsapi.org/v2/top-headlines?country=in&category=${category}&apiKey=${apiKey}&pageSize=${pageSize}&page=${page}`;
-    let data=await fetch(url);
+    const url = `https://api.nytimes.com/svc/search/v2/articlesearch.json?fq=news_desk:("${category}")%20AND%20glocations:(%22INDIA%22)%20&api-key=${apiKey}&page=${page}`;
+    let data = await fetch(url);
     setProgress(30);
-    let parsedData=await data.json();
+    let parsedData = await data.json();
+    console.log(parsedData);
     setProgress(70);
     setPage(page + 1);
-    setArticles(parsedData.articles);
-    setTotalResults(parsedData.totalResults);
+    setArticles(parsedData.response.docs);
+    setTotalResults(parsedData.response.meta.hits);
     setProgress(100);
     setLoading(false);
   };
@@ -30,18 +31,19 @@ export default function News(props) {
   };
 
   useEffect(() => {
-    
     updateNews();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[]);
+  }, []);
 
   const loadNext = async () => {
-    const url=`https://newsapi.org/v2/top-headlines?country=in&category=${category}&apiKey=${apiKey}&pageSize=${pageSize}&page=${page}`;
+    const url = `https://api.nytimes.com/svc/search/v2/articlesearch.json?fq=news_desk:("${category}")%20AND%20glocations:(%22INDIA%22)%20&api-key=${apiKey}&page=${page}`;
+    let data = await fetch(url);
+    let parsedData = await data.json();
 
-    let data=await fetch(url);
-    let parsedData=await data.json();
-    setArticles(articles.concat(parsedData.articles));
-    setTotalResults(parsedData.totalResults);
+    setTotalResults(parsedData.response.meta.hits);
+
+    setArticles(articles.concat(parsedData.response.docs));
+
     setPage(page + 1);
   };
 
@@ -64,14 +66,18 @@ export default function News(props) {
             {articles &&
               articles.map((val) => {
                 return (
-                  <div className="col-md-4 mb-3" key={val.url}>
+                  <div className="col-md-4 mb-3" key={val._id}>
                     <NewItem
-                      title={val.title}
-                      description={val.description}
-                      publishedAt={val.publishedAt}
-                      imageUrl={val.urlToImage}
-                      url={val.url}
-                      source={val.source.name}
+                      title={val.headline.main}
+                      description={val.abstract}
+                      publishedAt={val.pub_date}
+                      imageUrl={
+                        val.multimedia.length > 0
+                          ? `https://static01.nyt.com/${val.multimedia[0].url}`
+                          : "https://static01.nyt.com/images/2011/01/06/business/global/06micro-span/06micro-span-jumbo.jpg?quality=75&auto=webp"
+                      }
+                      url={val.web_url}
+                      source={val.source}
                     />
                   </div>
                 );
